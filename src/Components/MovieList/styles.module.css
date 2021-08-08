@@ -1,0 +1,12 @@
+.titleList {
+  margin-left: 26px;
+  font-size: large;
+  font-family: "Times New Roman", Times, serif;
+  color: blueviolet;
+  margin-bottom: 8px;
+}
+
+.titleList:hover {
+  color: rgb(255, 0, 0);
+  cursor: pointer;
+}
