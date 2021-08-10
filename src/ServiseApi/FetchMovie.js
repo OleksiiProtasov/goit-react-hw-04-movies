@@ -20,7 +20,7 @@ const FetchMovie = {
 
   fetchMovieById(id) {
     return axios
-      .get(`movie/{id}?api_key=${KEY}&language=en-US`)
+      .get(`movie/${id}?api_key=${KEY}&language=en-US`)
       .then((r) => r.data);
   },
 

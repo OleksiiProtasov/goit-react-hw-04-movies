@@ -7,21 +7,25 @@ import HomePage from "./Components/Pages/HomePage";
 import Movies from "./Components/Pages/MoviesPage";
 import NotFoundPage from "./Components/Pages/NotFoundPage";
 
-import MovieId from "./Components/Pages/MovieDetailsPage";
+import MovieDetailsPage from "./Components/Pages/MovieDetailsPage";
 
 function App() {
   return (
     <Container>
       <AppBar />
       <Switch>
-        <Route path="/" exact component={HomePage}>
+        <Route path="/" exact>
           <HomePage />
+        </Route>
+
+        <Route path="/Movies/:MovieDetailsPageById">
+          <MovieDetailsPage />
         </Route>
 
         <Route path="/Movies">
           <Movies />
         </Route>
-        <Route path="/Movies/:MovieId" component={MovieId}></Route>
+
         <Route>
           {" "}
           <NotFoundPage />{" "}

@@ -1,0 +1,16 @@
+.moviesBox {
+  display: flex;
+}
+
+.infoBox {
+  margin-left: 20px;
+}
+
+.genre {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.genreLi {
+  margin-right: 9px;
+}
