@@ -1,16 +1,18 @@
-.moviesBox {
-  display: flex;
+.Btn {
+  margin: 10px;
 }
 
-.infoBox {
-  margin-left: 20px;
-}
+/* .ActorsItem {
+  width: 200px;
+  height: 200px;
+} */
 
-.genre {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.genreLi {
-  margin-right: 9px;
+.btnS {
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  color: aliceblue;
+  background-color: rgb(236, 99, 49);
+  border-style: none;
+  margin-left: 10px;
 }

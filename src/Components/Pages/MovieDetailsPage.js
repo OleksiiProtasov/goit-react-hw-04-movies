@@ -1,61 +1,72 @@
-// import { render } from '@testing-library/react'
-import { useState, useEffect } from "react";
-// eslint-disable-next-line
-import styles from "./styles.module.css";
-import { useParams } from "react-router-dom";
+import { useState, useEffect, lazy, Suspense, useRef } from "react";
+import {
+  useHistory,
+  useLocation,
+  useRouteMatch,
+  Switch,
+  useParams,
+  Route,
+} from "react-router-dom";
 
+import styles from "./styles.module.css";
 import FetchMovie from "../../ServiseApi/FetchMovie";
 
-const base_url = "https://image.tmdb.org/t/p/w300";
-
-// class MovieDetailisPage extends Component {
-//   state = {
-//     movies: [],
-//   };
-
-//   async componentDidMount() {
-//     FetchMovie.fetchMovieById().then((r) => this.setState({ movies: [...r] }));
-//   }
-
-//   render() {
-//     return <h2>MovieDetailisPage</h2>;
-//   }
-// }
-
-// export default MovieDetailisPage;
+const Reviews = lazy(() => import("./Reviews"));
+const Cast = lazy(() => import("./Cast"));
+const MovieCard = lazy(() => import("../../Components/MovieCard"));
+const AddAppBar = lazy(() => import("../../Components/AddAppBar"));
 
 export default function MovieDetailisPage() {
   const { MovieDetailsPageById } = useParams();
   const [movie, setMovies] = useState(null);
+  const { path } = useRouteMatch();
+  const history = useHistory();
+  const location = useLocation();
+  const { current } = useRef(location.state);
 
   useEffect(() => {
-    FetchMovie.fetchMovieById(MovieDetailsPageById).then(setMovies);
-  }, [MovieDetailsPageById]);
-  console.log(movie);
+    FetchMovie.fetchMovieById(MovieDetailsPageById)
+      .then((d) => {
+        setMovies(d);
+      })
+      .catch((error) => {
+        history.push("/");
+        console.warn(error);
+      });
+  }, [MovieDetailsPageById, history]);
+
+  const goBackBtn = () => {
+    history.push(current ? current.from : "/");
+  };
 
   return (
     <>
-      {movie && (
-        <div className={styles.moviesBox}>
-          <img src={base_url + movie.poster_path} alt={movie.title} />
-          <div className={styles.infoBox}>
-            <h1>{movie.title}</h1>
-            <span>User Score: {movie.vote_average}</span>
-            <h3>Overview</h3>
-            <span>{movie.overview}</span>
-            <h3>Genres</h3>
-            <ul className={styles.genre}>
-              {movie.genres &&
-                movie.genres.map((g) => (
-                  <li className={styles.genreLi} key={g.id}>
-                    {" "}
-                    {g.name}{" "}
-                  </li>
-                ))}
-            </ul>
-          </div>
-        </div>
-      )}
+      <div>
+        <button onClick={goBackBtn} className={styles.Btn}>
+          Go back
+        </button>
+        {movie && (
+          <>
+            <Suspense fallback={<h2>Loading...</h2>}>
+              <MovieCard movie={movie} />
+              <hr />
+              <p>More informations</p>
+              <AddAppBar movieId={MovieDetailsPageById} />
+              <hr />
+            </Suspense>
+            <Suspense fallback={<h2>Loading...</h2>}>
+              <Switch>
+                <Route path={`${path}/cast`}>
+                  <Cast />
+                </Route>
+                <Route path={`${path}/reviews`}>
+                  <Reviews />
+                </Route>
+              </Switch>
+            </Suspense>
+          </>
+        )}
+      </div>
     </>
   );
 }

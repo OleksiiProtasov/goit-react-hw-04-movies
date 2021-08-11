@@ -1,53 +1,68 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useHistory, useLocation, useRouteMatch } from "react-router-dom";
-// eslint-disable-next-line
-import { Component } from "react";
+
+import styles from "./styles.module.css";
+
 import FetchMovie from "../../ServiseApi/FetchMovie";
-import SearchBar from "../SerchBar";
-// eslint-disable-next-line
-import MovieList from "../MovieList";
 
 export default function MoviesPage() {
-  // eslint-disable-next-line
+  const [query, setQuery] = useState("");
+  const [moviesList, setMoviesList] = useState(null);
   const history = useHistory();
   const location = useLocation();
   let { url } = useRouteMatch();
-  const [query, setQuery] = useState("");
-  const [moviesList, setMoviesList] = useState([]);
+
+  const handleInputChange = (e) => {
+    setQuery(e.target.value.toLowerCase());
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    history.push({ ...location, search: `query=${query}` });
+  };
 
   useEffect(() => {
-    const fetchSearchFilm = async () => {
-      return FetchMovie.fetchMovieByQuery({ query }).then(setMoviesList);
-    };
-    fetchSearchFilm();
-  }, [query]);
+    if (location.search === "") {
+      return;
+    }
 
-  const handleFormData = (searchQuery) => {
-    setQuery(searchQuery);
-  };
+    const queryF = new URLSearchParams(location.search).get("query");
+
+    FetchMovie.fetchMovieByQuery(queryF)
+      .then((data) => {
+        setMoviesList(data);
+      })
+      .catch((error) => console.warn(error))
+      .finally(() => {
+        setQuery("");
+      });
+  }, [location.search]);
 
   return (
     <>
-      <h1>Movies</h1>
-      {/* <form action='submit' onSubmit={heandleSubmit}>
-            <input
-              type='text'
-              name='search'
-              value={query}
-              // id='id-1'
-              onChange={heandleSearch}
-              />
-              <button type='submit'>Search</button>
-          </form> */}
-      <SearchBar onSubmitBar={handleFormData} />
+      <div>
+        <form action="submit" onSubmit={handleFormSubmit}>
+          <input
+            type="text"
+            autoComplete="off"
+            name="search"
+            placeholder=" input name films "
+            onChange={handleInputChange}
+            value={query}
+          />
+          <button className={styles.btnS} type="submit">
+            Search
+          </button>
+        </form>
+      </div>
       {moviesList && (
         <ul>
-          {moviesList.map((el) => (
-            <li key={el.id}>
+          {moviesList.map((m) => (
+            <li key={m.id}>
               <Link
-                to={{ pathname: `${url}/${el.id}`, state: { from: location } }}
+                to={{ pathname: `${url}/${m.id}`, state: { from: location } }}
               >
-                {el.original_title}
+                {m.original_title}
               </Link>
             </li>
           ))}

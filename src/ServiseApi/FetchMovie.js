@@ -26,7 +26,7 @@ const FetchMovie = {
 
   fetchMovieCastById(id) {
     return axios
-      .get(`movie/${id}/creadits?api_key=${KEY}&language=en-US`)
+      .get(`movie/${id}/credits?api_key=${KEY}&language=en-US`)
       .then((r) => r.data.cast);
   },
 
